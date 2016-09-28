@@ -1,0 +1,20 @@
+{
+  "name": "tableauwdc",
+  "description": "Required Library to bridge javascript with Tableau. Use the scripts below to create the combined shim library. i.e. npm run-script build_and_copy",
+  "scripts": {
+    "build": "webpack --config webpack.config.js --progress --profile --colors",
+    "build_min": "webpack --config webpack-production.config.js --progress --profile --colors",
+    "build_and_copy": "node DevUtils/BuildAndCopy.js"
+  },
+  "main": "ShimLibrary.js",
+  "private": true,
+  "author": "Tableau",
+  "devDependencies": {
+    "webpack": "^1.9.11",
+    "fs.extra": "^1.3.2"
+  },
+  "dependencies": {
+    "qwebchannel": "^5.5.0",
+    "json-loader": "^0.5.4"
+  }
+}
