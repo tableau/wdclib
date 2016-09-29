@@ -85,7 +85,8 @@ SimulatorDispatcher.prototype._sendMessage = function(msgName, msgData) {
   } else if (!this._sourceWindow) {
     throw "Looks like the WDC is calling a tableau function before tableau.init() has been called."
   } else {
-    this._sourceWindow.postMessage(messagePayload, "*");
+    // Make sure we only post this info back to the source origin the user approved in _getWebSecurityWarningConfirm
+    this._sourceWindow.postMessage(messagePayload, this._sourceOrigin);
   }
 }
 
@@ -103,7 +104,7 @@ SimulatorDispatcher.prototype._getPayloadObj = function(payloadString) {
 SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
   // Due to cross-origin security issues over https, we may not be able to retrieve _sourceWindow.
   // Use sourceOrigin instead.
-  var origin = this._sourceOrigin || this._sourceWindow.location.origin;
+  var origin = this._sourceOrigin;
 
   var Uri = require('jsuri');
   var parsedOrigin = new Uri(hostName);
@@ -112,6 +113,7 @@ SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
   if (supportedHosts.indexOf(parsedOrigin.host()) >= 0) {
       return true;
   }
+
   // Whitelist Tableau domains
   if (hostName && hostName.endsWith("online.tableau.com")) {
       return true;
