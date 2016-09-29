@@ -14,6 +14,9 @@ function Table(tableInfo, incrementValue, dataCallbackFn) {
 
   /** @private */
   this._dataCallbackFn = dataCallbackFn;
+
+  // bind the public facing version of this function so it can be passed around
+  this.appendRows = this._appendRows.bind(this);
 }
 
 /**
@@ -21,7 +24,7 @@ function Table(tableInfo, incrementValue, dataCallbackFn) {
 * @param data {array} - Either an array of arrays or an array of objects which represent
 * the individual rows of data to append to this table
 */
-Table.prototype.appendRows = function(data) {
+Table.prototype._appendRows = function(data) {
   // Do some quick validation that this data is the format we expect
   if (!data) {
     console.warn("rows data is null or undefined");
