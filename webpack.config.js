@@ -3,11 +3,12 @@ var webpack = require('webpack');
 var BuildNumber = require('./DevUtils/BuildNumber.js')
 
 // Try to get the build number we should use
-var buildNum = "2.0.0";
 try {
-  buildNum = BuildNumber.getBuildNumber(true).toString();
-} catch(err) {
-  console.warn("Error retrieving build number: " + err.toString());
+  var buildNum = BuildNumber.getBuildNumber().toString();
+} catch(e) {
+  console.error("Could not parse build number :(");
+  console.error(e.toString());
+  return;
 }
 
 module.exports = {

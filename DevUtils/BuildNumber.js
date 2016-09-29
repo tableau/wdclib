@@ -32,59 +32,19 @@ VersionNumber.prototype.compare = function(other) {
   return 0;
 }
 
-function isFileCheckedOut(filePath) {
-  var cmd = 'p4 opened "' + filePath + '"';
-  var result = execSync(cmd).toString();
-  if (result.indexOf("- edit") >= 0 || result.indexOf("- add") >= 0) {
-    return true;
+function getBuildNumber() {
+  // Grab the version number from the environment variable
+  var versionNumber = process.env.npm_package_config_versionNumber;
+  if (versionNumber) {
+    console.log("Found versionNumber in environment variable: '" + versionNumber + "'");
   } else {
-    return false;
+    versionNumber = process.argv.versionNumber;
+    console.log("Found versionNumber in argument: '" + versionNumber + "'");
   }
+
+  return versionNumber;
 }
 
-function getJsSdkDir() {
-  var jsPath = path.join(__dirname, "..", "..", "js");
-  return jsPath;
-}
-
-function getBuildNumber(checkPerforce) {
-  var destinationPath = getJsSdkDir();
-  var existingFiles = fs.readdirSync(destinationPath);
-  var existingBuildNumbers = [];
-  for(var jsFile of existingFiles) {
-    if (jsFile.substr(0, WDC_LIB_PREFIX.length) === WDC_LIB_PREFIX) {
-      var numberString = jsFile.substr(WDC_LIB_PREFIX.length);
-      numberString = numberString.substr(0, numberString.length - ".js".length);
-      existingBuildNumbers.push(new VersionNumber(numberString));
-    }
-  }
-
-  var newest = new VersionNumber("0.0.0");
-  for (var versionNumber of existingBuildNumbers) {
-    if (versionNumber.compare(newest) > 0) {
-      newest = versionNumber;
-    }
-  }
-
-  console.log("Most recent build is " + newest.toString());
-
-  var doIncrement = true;
-  if (checkPerforce) {
-    var newFileName = WDC_LIB_PREFIX + newest.toString() + ".js";
-    var existingFilePath = path.join(getJsSdkDir(), newFileName);
-    doIncrement = !isFileCheckedOut(existingFilePath);
-  }
-
-  var nextBuildNumber = newest;
-  if (doIncrement) {
-    nextBuildNumber.fix++;
-  }
-
-  console.log("Next number is " + nextBuildNumber.toString());
-  return nextBuildNumber;
-}
-
-module.exports.getBuildNumber = getBuildNumber;
+module.exports.VersionNumber = VersionNumber;
 module.exports.WDC_LIB_PREFIX = WDC_LIB_PREFIX;
-module.exports.isFileCheckedOut = isFileCheckedOut;
-module.exports.getJsSdkDir = getJsSdkDir;
+module.exports.getBuildNumber = getBuildNumber;
