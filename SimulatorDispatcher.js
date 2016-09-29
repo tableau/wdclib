@@ -103,10 +103,13 @@ SimulatorDispatcher.prototype._getPayloadObj = function(payloadString) {
 SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
   // Due to cross-origin security issues over https, we may not be able to retrieve _sourceWindow.
   // Use sourceOrigin instead.
-  var hostName = this._sourceOrigin || this._sourceWindow.location.origin;
+  var origin = this._sourceOrigin || this._sourceWindow.location.origin;
 
-  var supportedHosts = ["http://localhost", "https://localhost", "http://tableau.github.io", "https://tableau.github.io"];
-  if (supportedHosts.indexOf(hostName) >= 0) {
+  var Uri = require('jsuri');
+  var parsedOrigin = new Uri(hostName);
+
+  var supportedHosts = ["localhost", "tableau.github.io"];
+  if (supportedHosts.indexOf(parsedOrigin.host()) >= 0) {
       return true;
   }
   // Whitelist Tableau domains

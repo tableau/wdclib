@@ -18,9 +18,10 @@
     "commander": "^2.9.0",
     "fs-extra": "^0.30.0",
     "json-loader": "^0.5.4",
+    "jsuri": "^1.3.1",
     "qwebchannel": "^5.5.0"
   },
   "config": {
-    "versionNumber": "2.1.0"
+    "versionNumber": "2.1.1"
   }
 }
