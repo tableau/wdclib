@@ -101,9 +101,11 @@ SimulatorDispatcher.prototype._getPayloadObj = function(payloadString) {
 }
 
 SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
-  var hostName = this._sourceWindow.location.hostname;
+  // Due to cross-origin security issues over https, we may not be able to retrieve _sourceWindow.
+  // Use sourceOrigin instead.
+  var hostName = this._sourceOrigin || this._sourceWindow.location.origin;
 
-  var supportedHosts = ["localhost", "tableau.github.io"];
+  var supportedHosts = ["http://localhost", "https://localhost", "http://tableau.github.io", "https://tableau.github.io"];
   if (supportedHosts.indexOf(hostName) >= 0) {
       return true;
   }
@@ -172,7 +174,8 @@ SimulatorDispatcher.prototype._receiveMessage = function(evt) {
   if(!payloadObj) return; // This message is not needed for WDC
 
   if (!this._sourceWindow) {
-    this._sourceWindow = evt.source
+    this._sourceWindow = evt.source;
+    this._sourceOrigin = evt.origin;
   }
 
   var msgData = payloadObj.msgData;
@@ -232,7 +235,7 @@ SimulatorDispatcher.prototype._addCrossOriginException = function(destOriginList
   console.log("Cross Origin Exception requested in the simulator. Pretending to work.")
   setTimeout(function() {
     this.globalObj._wdc.addCrossOriginExceptionCompleted(destOriginList);
-  }, 0);
+  }.bind(this), 0);
 }
 
 SimulatorDispatcher.prototype._log = function(msg) {
