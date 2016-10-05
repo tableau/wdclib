@@ -25,6 +25,7 @@ function addApprovedOrigin(origin) {
   }
 }
 
+// Retrieves the origins which have already been approved by the user
 function getApprovedOrigins() {
   var originsString = _getApprovedOriginsValue();
   if (!originsString || 0 === originsString.length) {
