@@ -1,3 +1,5 @@
+var ApprovedOrigins = require('./ApprovedOrigins.js');
+
 /** @class Used for communicating between the simulator and web data connector. It does
 * this by passing messages between the WDC window and its parent window
 * @param globalObj {Object} - the global object to find tableau interfaces as well
@@ -85,7 +87,8 @@ SimulatorDispatcher.prototype._sendMessage = function(msgName, msgData) {
   } else if (!this._sourceWindow) {
     throw "Looks like the WDC is calling a tableau function before tableau.init() has been called."
   } else {
-    this._sourceWindow.postMessage(messagePayload, "*");
+    // Make sure we only post this info back to the source origin the user approved in _getWebSecurityWarningConfirm
+    this._sourceWindow.postMessage(messagePayload, this._sourceOrigin);
   }
 }
 
@@ -103,20 +106,39 @@ SimulatorDispatcher.prototype._getPayloadObj = function(payloadString) {
 SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
   // Due to cross-origin security issues over https, we may not be able to retrieve _sourceWindow.
   // Use sourceOrigin instead.
-  var hostName = this._sourceOrigin || this._sourceWindow.location.origin;
+  var origin = this._sourceOrigin;
 
-  var supportedHosts = ["http://localhost", "https://localhost", "http://tableau.github.io", "https://tableau.github.io"];
+  var Uri = require('jsuri');
+  var parsedOrigin = new Uri(origin);
+  var hostName = parsedOrigin.host();
+
+  var supportedHosts = ["localhost", "tableau.github.io"];
   if (supportedHosts.indexOf(hostName) >= 0) {
       return true;
   }
+
   // Whitelist Tableau domains
   if (hostName && hostName.endsWith("online.tableau.com")) {
       return true;
   }
 
+  var alreadyApprovedOrigins = ApprovedOrigins.getApprovedOrigins();
+  if (alreadyApprovedOrigins.indexOf(origin) >= 0) {
+    // The user has already approved this origin, no need to ask again
+    console.log("Already approved the origin'" + origin + "', not asking again");
+    return true;
+  }
+
   var localizedWarningTitle = this._getLocalizedString("webSecurityWarning");
   var completeWarningMsg  = localizedWarningTitle + "\n\n" + hostName + "\n";
-  return confirm(completeWarningMsg);
+  var isConfirmed = confirm(completeWarningMsg);
+
+  if (isConfirmed) {
+    // Set a session cookie to mark that we've approved this already
+    ApprovedOrigins.addApprovedOrigin(origin);
+  }
+
+  return isConfirmed;
 }
 
 SimulatorDispatcher.prototype._getCurrentLocale = function() {

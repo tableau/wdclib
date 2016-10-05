@@ -4,7 +4,6 @@
   "scripts": {
     "build": "webpack --config webpack.config.js --progress --profile --colors",
     "build_min": "webpack --config webpack-production.config.js --progress --profile --colors",
-    "build_and_copy": "node DevUtils/BuildAndCopy.js",
     "make_version": "node ./make_version.js"
   },
   "main": "ShimLibrary.js",
@@ -16,11 +15,13 @@
   },
   "dependencies": {
     "commander": "^2.9.0",
+    "cookies-js": "^1.2.2",
     "fs-extra": "^0.30.0",
     "json-loader": "^0.5.4",
+    "jsuri": "^1.3.1",
     "qwebchannel": "^5.5.0"
   },
   "config": {
-    "versionNumber": "2.1.0"
+    "versionNumber": "2.1.1"
   }
 }
