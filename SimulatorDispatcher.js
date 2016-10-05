@@ -1,3 +1,5 @@
+var ApprovedOrigins = require('./ApprovedOrigins.js');
+
 /** @class Used for communicating between the simulator and web data connector. It does
 * this by passing messages between the WDC window and its parent window
 * @param globalObj {Object} - the global object to find tableau interfaces as well
@@ -107,10 +109,11 @@ SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
   var origin = this._sourceOrigin;
 
   var Uri = require('jsuri');
-  var parsedOrigin = new Uri(hostName);
+  var parsedOrigin = new Uri(origin);
+  var hostName = parsedOrigin.host();
 
   var supportedHosts = ["localhost", "tableau.github.io"];
-  if (supportedHosts.indexOf(parsedOrigin.host()) >= 0) {
+  if (supportedHosts.indexOf(hostName) >= 0) {
       return true;
   }
 
@@ -119,9 +122,23 @@ SimulatorDispatcher.prototype._getWebSecurityWarningConfirm = function() {
       return true;
   }
 
+  var alreadyApprovedOrigins = ApprovedOrigins.getApprovedOrigins();
+  if (alreadyApprovedOrigins.indexOf(origin) >= 0) {
+    // The user has already approved this origin, no need to ask again
+    console.log("Already approved the origin'" + origin + "', not asking again");
+    return true;
+  }
+
   var localizedWarningTitle = this._getLocalizedString("webSecurityWarning");
   var completeWarningMsg  = localizedWarningTitle + "\n\n" + hostName + "\n";
-  return confirm(completeWarningMsg);
+  var isConfirmed = confirm(completeWarningMsg);
+
+  if (isConfirmed) {
+    // Set a session cookie to mark that we've approved this already
+    ApprovedOrigins.addApprovedOrigin(origin);
+  }
+
+  return isConfirmed;
 }
 
 SimulatorDispatcher.prototype._getCurrentLocale = function() {

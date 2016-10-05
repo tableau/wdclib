@@ -101,7 +101,12 @@ NativeDispatcher.prototype._tableDataCallback = function(tableName, data) {
 }
 
 NativeDispatcher.prototype._reportProgress = function (progress) {
+  // Report progress was added in 2.1 so it may not be available if Tableau only knows 2.0
+  if (!!this.nativeApiRootObj.WDCBridge_Api_reportProgress) {
     this.nativeApiRootObj.WDCBridge_Api_reportProgress.api(progress);
+  } else {
+    console.log("reportProgress not available from this Tableau version");
+  }
 }
 
 NativeDispatcher.prototype._dataDoneCallback = function() {
