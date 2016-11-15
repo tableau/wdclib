@@ -237,6 +237,7 @@ SimulatorDispatcher.prototype._initPublicInterface = function() {
   publicInterface.abortWithError = this._abortWithError.bind(this);
   publicInterface.addCrossOriginException = this._addCrossOriginException.bind(this);
   publicInterface.log = this._log.bind(this);
+  publicInterface.reportProgress = this._reportProgress.bind(this);
   publicInterface.submit = this._submit.bind(this);
 
   // Assign the public interface to this
@@ -262,6 +263,10 @@ SimulatorDispatcher.prototype._addCrossOriginException = function(destOriginList
 
 SimulatorDispatcher.prototype._log = function(msg) {
   this._sendMessage("log", {"logMsg": msg});
+}
+
+SimulatorDispatcher.prototype._reportProgress = function(msg) {
+  this._sendMessage("reportProgress", {"progressMsg": msg});
 }
 
 SimulatorDispatcher.prototype._submit = function() {
