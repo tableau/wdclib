@@ -22,6 +22,6 @@
     "qwebchannel": "^5.5.0"
   },
   "config": {
-    "versionNumber": "2.1.1"
+    "versionNumber": "2.1.2"
   }
 }
