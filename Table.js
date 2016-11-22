@@ -3,7 +3,7 @@
 * @param tableInfo {Object} - Information about the table
 * @param incrementValue {string=} - Incremental update value
 */
-function Table(tableInfo, incrementValue, dataCallbackFn) {
+function Table(tableInfo, incrementValue, isJoinFiltered, filterColumnId, filterValues, dataCallbackFn) {
   /** @member {Object} Information about the table which has been requested. This is
   guaranteed to be one of the tables the connector returned in the call to getSchema. */
   this.tableInfo = tableInfo;
@@ -11,6 +11,12 @@ function Table(tableInfo, incrementValue, dataCallbackFn) {
   /** @member {string} Defines the incremental update value for this table. Empty string if
   there is not an incremental update requested. */
   this.incrementValue = incrementValue || "";
+
+  this.isJoinFiltered = isJoinFiltered;
+
+  this.filterColumnId = filterColumnId;
+
+  this.filterValues = filterValues;
 
   /** @private */
   this._dataCallbackFn = dataCallbackFn;
