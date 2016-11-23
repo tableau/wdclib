@@ -12,10 +12,15 @@ function Table(tableInfo, incrementValue, isJoinFiltered, filterColumnId, filter
   there is not an incremental update requested. */
   this.incrementValue = incrementValue || "";
 
+  /** @member {boolean} Whether or not this table is meant to be filtered using filterValues. */
   this.isJoinFiltered = isJoinFiltered;
 
+  /** @member {string} If this table is filtered, this is the column where the filter values
+   * should be found. */
   this.filterColumnId = filterColumnId;
 
+  /** @member {array} An array of strings which specifies the values we want to retrieve. For
+   * example, if an ID column was the filter column, this would be a collection of IDs to retrieve. */
   this.filterValues = filterValues;
 
   /** @private */
