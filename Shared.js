@@ -1,5 +1,6 @@
 var Table = require('./Table.js');
 var Enums = require('./Enums.js');
+var Utilities = require('./Utilities.js');
 
 /** @class This class represents the shared parts of the javascript
 * library which do not have any dependence on whether we are running in
@@ -26,6 +27,9 @@ Shared.prototype.init = function() {
 
   // Assign the deprecated functions which aren't availible in this version of the API
   this._initDeprecatedFunctions();
+
+  // Assign the new log2 method which allows us to specify a log level
+  this.tableauApiObj.log2 = this._log2.bind(this);
 }
 
 Shared.prototype.changeTableauApiObj = function(tableauApiObj) {
@@ -152,5 +156,19 @@ Shared.prototype._dataCallback = function (data, lastRecordToken, moreData) {
 Shared.prototype._shutdownCallback = function () {
   this.tableauApiObj.abortWithError("tableau.shutdownCallback has been deprecated in version 2.0.0. Please use the callback function passed to shutdown");
 };
+
+Shared.prototype._log2 = function(msg, level) {
+  // Check to see if we should actually log this message based on the Tableau's log level.
+  // If this connector is running in a pre-10.2 version of tableau, this.tableauApiObj.logLevel will be undefined.
+  // In this case, it will default to the info log level
+  if (!this.logLevel) {
+    // cache the logLevel locally so we don't need to call into the native layer each time we log
+    this.logLevel = this.tableauApiObj.logLevel;
+  }
+
+  if (Utilities.shouldLogMessage(level, this.logLevel)) {
+    this.tableauApiObj.log(msg);
+  }
+}
 
 module.exports = Shared;

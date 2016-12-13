@@ -85,6 +85,16 @@ var allEnums = {
   joinEnum : {
       inner: "inner",
       left: "left"
+  },
+
+  logLevelEnum : {
+    trace: "trace",
+    debug: "debug",
+    info: "info",
+    warn: "warn",
+    error: "error",
+    fatal: "fatal",
+    off: "off"
   }
 }
 
