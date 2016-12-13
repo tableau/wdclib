@@ -163,7 +163,7 @@ Shared.prototype._log2 = function(msg, level) {
   // In this case, it will default to the info log level
   if (!this.logLevel) {
     // cache the logLevel locally so we don't need to call into the native layer each time we log
-    this.logLevel = this.tableauApiObj.logLevel;
+    this.logLevel = this.tableauApiObj.logLevel || '';
   }
 
   if (Utilities.shouldLogMessage(level, this.logLevel)) {
