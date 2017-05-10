@@ -1,5 +1,8 @@
 var ApprovedOrigins = require('./ApprovedOrigins.js');
 
+// Required for IE & Edge which don't support endsWith
+require('String.prototype.endsWith');
+
 /** @class Used for communicating between the simulator and web data connector. It does
 * this by passing messages between the WDC window and its parent window
 * @param globalObj {Object} - the global object to find tableau interfaces as well
