@@ -112,7 +112,15 @@ Shared.prototype._triggerDataGathering = function(tablesAndIncrementValues) {
   }
 
   var tableAndIncremntValue = tablesAndIncrementValues[0];
-  var table = new Table(tableAndIncremntValue.tableInfo, tableAndIncremntValue.incrementValue, this.privateApiObj._tableDataCallback);
+  var isJoinFiltered = !!tableAndIncremntValue.filterColumnId;
+  var table = new Table(
+    tableAndIncremntValue.tableInfo, 
+    tableAndIncremntValue.incrementValue, 
+    isJoinFiltered, 
+    tableAndIncremntValue.filterColumnId || '', 
+    tableAndIncremntValue.filterValues || [],
+    this.privateApiObj._tableDataCallback);
+
   this._wdc.getData(table, this.privateApiObj._dataDoneCallback);
 }
 
