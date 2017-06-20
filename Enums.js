@@ -23,7 +23,8 @@ var allEnums = {
     datetime: "datetime",
     float: "float",
     int: "int",
-    string: "string"
+    string: "string",
+    geometry: "geometry"
   },
 
   columnRoleEnum : {
