@@ -51,7 +51,7 @@ module.exports.init = function() {
       window._tableau._nativeSetupCompleted = function() {
         // Once the native code tells us everything here is done, we should have all the expected objects inserted into js
         dispatcher = new NativeDispatcher(channel.objects);
-        window.tableau = channel.objects.tableau;
+        Utilities.linkObjectProperties(channel.objects.tableau, window.tableau, Utilities.tableauProperties);
         shared.changeTableauApiObj(window.tableau);
         bootstrappingFinished(dispatcher, shared);
       };
