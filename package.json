@@ -23,6 +23,6 @@
     "string.prototype.endswith": "^0.2.0"
   },
   "config": {
-    "versionNumber": "2.2.1"
+    "versionNumber": "2.2.2"
   }
 }
