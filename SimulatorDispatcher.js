@@ -270,7 +270,9 @@ SimulatorDispatcher.prototype._enableCookiePersistence = function() {
   // do. Just call back to the WDC indicating that it worked
   console.log("Shared Cookies Exception requested in the simulator. Pretending to work.")
   setTimeout(function() {
-    this.globalObj._wdc.enableCookiePersistenceCompleted();
+    if (typeof this.globalObj._wdc.enableCookiePersistenceCompleted === "function") {
+      this.globalObj._wdc.enableCookiePersistenceCompleted();
+    }
   }.bind(this), 0);
 }
 
