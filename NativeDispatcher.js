@@ -17,6 +17,7 @@ NativeDispatcher.prototype._initPublicInterface = function() {
   publicInterface.abortForAuth = this._abortForAuth.bind(this);
   publicInterface.abortWithError = this._abortWithError.bind(this);
   publicInterface.addCrossOriginException = this._addCrossOriginException.bind(this);
+  publicInterface.enableCookiePersistence = this._enableCookiePersistence.bind(this);
   publicInterface.log = this._log.bind(this);
   publicInterface.submit = this._submit.bind(this);
   publicInterface.reportProgress = this._reportProgress.bind(this);
@@ -34,6 +35,10 @@ NativeDispatcher.prototype._abortWithError = function(msg) {
 
 NativeDispatcher.prototype._addCrossOriginException = function(destOriginList) {
   this.nativeApiRootObj.WDCBridge_Api_addCrossOriginException.api(destOriginList);
+}
+
+NativeDispatcher.prototype._enableCookiePersistence = function() {
+  this.nativeApiRootObj.WDCBridge_Api_enableCookiePersistence.api();
 }
 
 NativeDispatcher.prototype._log = function(msg) {
