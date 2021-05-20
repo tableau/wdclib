@@ -239,6 +239,7 @@ SimulatorDispatcher.prototype._initPublicInterface = function() {
   publicInterface.abortForAuth = this._abortForAuth.bind(this);
   publicInterface.abortWithError = this._abortWithError.bind(this);
   publicInterface.addCrossOriginException = this._addCrossOriginException.bind(this);
+  publicInterface.enableCookiePersistence = this._enableCookiePersistence.bind(this);
   publicInterface.log = this._log.bind(this);
   publicInterface.reportProgress = this._reportProgress.bind(this);
   publicInterface.submit = this._submit.bind(this);
@@ -261,6 +262,17 @@ SimulatorDispatcher.prototype._addCrossOriginException = function(destOriginList
   console.log("Cross Origin Exception requested in the simulator. Pretending to work.")
   setTimeout(function() {
     this.globalObj._wdc.addCrossOriginExceptionCompleted(destOriginList);
+  }.bind(this), 0);
+}
+
+SimulatorDispatcher.prototype._enableCookiePersistence = function() {
+  // Don't bother passing this back to the simulator since there's nothing it can
+  // do. Just call back to the WDC indicating that it worked
+  console.log("Shared Cookies Exception requested in the simulator. Pretending to work.")
+  setTimeout(function() {
+    if (typeof this.globalObj._wdc.enableCookiePersistenceCompleted === "function") {
+      this.globalObj._wdc.enableCookiePersistenceCompleted();
+    }
   }.bind(this), 0);
 }
 
