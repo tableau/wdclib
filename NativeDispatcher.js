@@ -1,8 +1,8 @@
 /** @class Used for communicating between Tableau desktop/server and the WDC's
-* Javascript. is predominantly a pass-through to the Qt WebBridge methods
-* @param nativeApiRootObj {Object} - The root object where the native Api methods
-* are available. For WebKit, this is window.
-*/
+ * Javascript. is predominantly a pass-through to the Qt WebBridge methods
+ * @param nativeApiRootObj {Object} - The root object where the native Api methods
+ * are available. For WebKit, this is window.
+ */
 function NativeDispatcher (nativeApiRootObj) {
   this.nativeApiRootObj = nativeApiRootObj;
   this._initPublicInterface();
@@ -38,7 +38,12 @@ NativeDispatcher.prototype._addCrossOriginException = function(destOriginList) {
 }
 
 NativeDispatcher.prototype._enableCookiePersistence = function() {
-  this.nativeApiRootObj.WDCBridge_Api_enableCookiePersistence.api();
+  // Cookie persistence was added in wdclib 2.4, Tableau 2021.1.2
+  if (!!this.nativeApiRootObj.WDCBridge_Api_enableCookiePersistence) {
+    this.nativeApiRootObj.WDCBridge_Api_enableCookiePersistence.api();
+  } else {
+    console.log("enableCookiePersistence requires Tableau 2021.1.2+");
+  }
 }
 
 NativeDispatcher.prototype._log = function(msg) {
