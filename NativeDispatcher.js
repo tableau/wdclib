@@ -1,8 +1,8 @@
 /** @class Used for communicating between Tableau desktop/server and the WDC's
-* Javascript. is predominantly a pass-through to the Qt WebBridge methods
-* @param nativeApiRootObj {Object} - The root object where the native Api methods
-* are available. For WebKit, this is window.
-*/
+ * Javascript. is predominantly a pass-through to the Qt WebBridge methods
+ * @param nativeApiRootObj {Object} - The root object where the native Api methods
+ * are available. For WebKit, this is window.
+ */
 function NativeDispatcher (nativeApiRootObj) {
   this.nativeApiRootObj = nativeApiRootObj;
   this._initPublicInterface();
@@ -17,6 +17,7 @@ NativeDispatcher.prototype._initPublicInterface = function() {
   publicInterface.abortForAuth = this._abortForAuth.bind(this);
   publicInterface.abortWithError = this._abortWithError.bind(this);
   publicInterface.addCrossOriginException = this._addCrossOriginException.bind(this);
+  publicInterface.enableCookiePersistence = this._enableCookiePersistence.bind(this);
   publicInterface.log = this._log.bind(this);
   publicInterface.submit = this._submit.bind(this);
   publicInterface.reportProgress = this._reportProgress.bind(this);
@@ -34,6 +35,15 @@ NativeDispatcher.prototype._abortWithError = function(msg) {
 
 NativeDispatcher.prototype._addCrossOriginException = function(destOriginList) {
   this.nativeApiRootObj.WDCBridge_Api_addCrossOriginException.api(destOriginList);
+}
+
+NativeDispatcher.prototype._enableCookiePersistence = function() {
+  // Cookie persistence was added in wdclib 2.4, Tableau 2021.1.2
+  if (!!this.nativeApiRootObj.WDCBridge_Api_enableCookiePersistence) {
+    this.nativeApiRootObj.WDCBridge_Api_enableCookiePersistence.api();
+  } else {
+    console.log("enableCookiePersistence requires Tableau 2021.1.2+");
+  }
 }
 
 NativeDispatcher.prototype._log = function(msg) {
